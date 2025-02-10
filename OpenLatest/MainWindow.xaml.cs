@@ -39,6 +39,8 @@ namespace OpenLatest
             InitializeComponent();            
             DataContext = Data;
             ResizeMode = ResizeMode.CanMinimize;
+
+            Properties.Settings.Default.Upgrade();
         }
 
         protected override void OnSourceInitialized(EventArgs e)

@@ -8,8 +8,10 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\fumo.ico</ApplicationIcon>
     <UseWindowsForms>True</UseWindowsForms>
-    <AssemblyVersion>1.1.0.1</AssemblyVersion>
-    <FileVersion>1.1.0.1</FileVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>T:\Projects\KeyFiles\sgKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
