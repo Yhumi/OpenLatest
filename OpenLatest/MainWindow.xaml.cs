@@ -71,7 +71,7 @@ namespace OpenLatest
             if (!RegisterHotKey(helper.Handle, HOTKEY_ID, 0x0003, 0xBE))
             {
                 // handle error
-                MessageBox.Show("Fatal Error.", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Fatal Error.", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -92,6 +92,17 @@ namespace OpenLatest
                         case HOTKEY_ID:
                             OpenLatest();
                             handled = true;
+                            break;
+                    }
+                    break;
+                case 0x0112:
+                    switch (wParam.ToInt32())
+                    {
+                        case 0xF020:
+                            // Cancel the minimize.
+                            handled = true;
+
+                            Visibility = Visibility.Hidden;
                             break;
                     }
                     break;
@@ -128,7 +139,7 @@ namespace OpenLatest
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An error occurred opening {latestItem.FullName}. \n\n{ex.Message}", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show($"An error occurred opening {latestItem.FullName}. \n\n{ex.Message}", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
