@@ -22,7 +22,7 @@ namespace OpenLatest
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow_Data Data = new();
+        public MainWindow_Data Data = new(); 
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -54,7 +54,7 @@ namespace OpenLatest
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
             _source.AddHook(HwndHook);
-            RegisterHotKey();
+            RegisterHotKey(0x0003, 0xBE);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -65,10 +65,10 @@ namespace OpenLatest
             base.OnClosed(e);
         }
 
-        private void RegisterHotKey()
+        private void RegisterHotKey(uint modifier, uint vk)
         {
             var helper = new WindowInteropHelper(this);
-            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, 0x0003, 0xBE))
+            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, modifier, vk))
             {
                 // handle error
                 System.Windows.MessageBox.Show("Fatal Error.", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -123,11 +123,19 @@ namespace OpenLatest
             }
         }
 
+        private void ReRegisterHotkey(object sender, RoutedEventArgs e)
+        {
+            //Unregister current then re-register new
+            UnregisterHotKey();
+
+            var modifier = Data.GetModifierFlags();
+            RegisterHotKey(modifier, Data.VK);
+        }
+
         private void OpenLatest()
         {
             if (Directory.Exists(Data.Folder))
             {
-                
                 var latestItem = new DirectoryInfo(Data.Folder).GetFiles().OrderByDescending(x => x.LastWriteTimeUtc).First();
 
                 try
@@ -135,6 +143,7 @@ namespace OpenLatest
                     ProcessStartInfo processStartInfo = new ProcessStartInfo(latestItem.FullName);
                     processStartInfo.UseShellExecute = true;
 
+                    if (Data.CopyToClipboard) System.Windows.Clipboard.SetDataObject(latestItem.FullName);
                     Process.Start(processStartInfo);
                 }
                 catch (Exception ex)
@@ -149,7 +158,52 @@ namespace OpenLatest
     {
         private string _folder = string.Empty;
         public string Folder { get => _folder; set { _folder = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Folder")); } }
+        public bool CopyToClipboard { get; set; } = false;
+
+        public bool Ctrl { get; set; } = true;
+        public bool Alt { get; set; } = true;
+        public bool Shift { get; set; } = false;
+
+        public uint VK { get; set; } = 0xBE;
+
+        public CollectionView KeysCombo { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private const uint CtrlModifier = 0x0002;
+        private const uint AltModifier = 0x0001;
+        private const uint ShiftModifier = 0x0004;
+
+        public MainWindow_Data()
+        {
+            IList<ComboListData> combo = [];
+            foreach (var key in Enum.GetValues(typeof(Keys)).Cast<Keys>())
+            {
+                combo.Add(new ComboListData(key.ToString(), (uint)key));
+            }
+            KeysCombo = new(combo);
+        }
+
+        public uint GetModifierFlags()
+        {
+            var modifVal = (uint)0x0000;
+
+            if (Ctrl) modifVal |= CtrlModifier;
+            if (Alt) modifVal |= AltModifier;
+            if (Shift) modifVal |= ShiftModifier;
+
+            return modifVal;
+        }
+    }
+
+    public class ComboListData
+    {
+        public uint Tag { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public ComboListData(string display, uint vkVal)
+        {
+            Tag = vkVal;
+            Name = display;
+        }
     }
 }

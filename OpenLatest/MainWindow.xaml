@@ -3,11 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:OpenLatest" d:DataContext="{d:DesignInstance Type=local:MainWindow_Data}"
         mc:Ignorable="d"
-        Title="MainWindow" SizeToContent="WidthAndHeight" MinHeight="70" MinWidth="410" ResizeMode="CanResize" Height="78" Width="360">
+        Title="Open Latest" SizeToContent="WidthAndHeight" MinHeight="70" MinWidth="410" ResizeMode="CanResize" Height="103" Width="360">
     <Grid Margin="0,0,10,10">
         <TextBox x:Name="folderBox" IsReadOnly="True" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Folder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="335" />
         <Button Content="Browse" HorizontalAlignment="Left" Margin="350,9,0,0" VerticalAlignment="Top" Height="19" Width="50" Click="OpenFolderDialog"/>
+        <CheckBox Content="Ctrl" IsChecked="{Binding Ctrl, Mode=TwoWay}" HorizontalAlignment="Left" Margin="67,55,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Alt" IsChecked="{Binding Alt, Mode=TwoWay}" HorizontalAlignment="Left" Margin="111,55,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Shift" IsChecked="{Binding Shift, Mode=TwoWay}" HorizontalAlignment="Left" Margin="151,55,0,0" VerticalAlignment="Top" Height="17"/>
+        <Button Content="Save Hotkey" HorizontalAlignment="Left" Margin="325,53,0,0" VerticalAlignment="Top" Height="19" Width="75" Click="ReRegisterHotkey"/>
+        <ComboBox ItemsSource="{Binding KeysCombo}" DisplayMemberPath="Name" SelectedValuePath="Tag" SelectedValue="{Binding VK, Mode=TwoWay}" HorizontalAlignment="Left" Margin="200,53,0,0" VerticalAlignment="Top" Width="120" Height="19" /> 
+        <CheckBox IsChecked="{Binding CopyToClipboard, Mode=TwoWay}" Content="Copy path to clipboard?" HorizontalAlignment="Left" Margin="253,33,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
