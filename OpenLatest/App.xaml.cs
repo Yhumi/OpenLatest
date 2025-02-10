@@ -12,7 +12,7 @@ namespace OpenLatest
         {
             nIcon.Icon = new Icon(@"Assets/fumo.ico");
             nIcon.Visible = true;
-            nIcon.ShowBalloonTip(5000, "Title", "Text", ToolTipIcon.Info);
+            nIcon.ShowBalloonTip(5000, "Running in background.", "Open Latest will continue to function.", ToolTipIcon.Info);
             nIcon.Click += nIcon_Click;
         }
 
