@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Open Latest" SizeToContent="WidthAndHeight" MinHeight="70" MinWidth="410" ResizeMode="CanResize" Height="103" Width="360">
     <Grid Margin="0,0,10,10">
-        <TextBox x:Name="folderBox" IsReadOnly="True" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Folder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="335" />
+        <TextBox x:Name="folderBox" IsReadOnly="True" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Folder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Top" Width="335" />
         <Button Content="Browse" HorizontalAlignment="Left" Margin="350,9,0,0" VerticalAlignment="Top" Height="19" Width="50" Click="OpenFolderDialog"/>
         <CheckBox Content="Ctrl" IsChecked="{Binding Ctrl, Mode=TwoWay}" HorizontalAlignment="Left" Margin="67,55,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Alt" IsChecked="{Binding Alt, Mode=TwoWay}" HorizontalAlignment="Left" Margin="111,55,0,0" VerticalAlignment="Top"/>

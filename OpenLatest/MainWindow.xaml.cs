@@ -1,19 +1,12 @@
 ﻿using Microsoft.Win32;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OpenLatest
 {
@@ -43,7 +36,7 @@ namespace OpenLatest
 
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
             DataContext = Data;
             ResizeMode = ResizeMode.CanMinimize;
         }
@@ -54,7 +47,7 @@ namespace OpenLatest
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
             _source.AddHook(HwndHook);
-            RegisterHotKey(0x0003, 0xBE);
+            RegisterHotKey(Data.GetModifierFlags(), Data.VK);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -62,6 +55,7 @@ namespace OpenLatest
             _source.RemoveHook(HwndHook);
             _source = null;
             UnregisterHotKey();
+            Data.UpdateSettings();
             base.OnClosed(e);
         }
 
@@ -182,6 +176,32 @@ namespace OpenLatest
                 combo.Add(new ComboListData(key.ToString(), (uint)key));
             }
             KeysCombo = new(combo);
+
+            //User settings
+            try
+            {
+                Ctrl = Properties.Settings.Default.Ctrl;
+                Alt = Properties.Settings.Default.Alt;
+                Shift = Properties.Settings.Default.Shift;
+                VK = Properties.Settings.Default.VK;
+
+                CopyToClipboard = Properties.Settings.Default.CopyToClipboard;
+                Folder = Properties.Settings.Default.Folder;
+            }
+            catch (Exception ex) { }
+        }
+
+        public void UpdateSettings()
+        {
+            Properties.Settings.Default.Ctrl = Ctrl;
+            Properties.Settings.Default.Alt = Alt;
+            Properties.Settings.Default.Shift = Shift;
+            Properties.Settings.Default.VK = VK;
+
+            Properties.Settings.Default.CopyToClipboard = CopyToClipboard;
+            Properties.Settings.Default.Folder = Folder;
+
+            Properties.Settings.Default.Save();
         }
 
         public uint GetModifierFlags()
