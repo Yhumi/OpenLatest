@@ -1,6 +1,4 @@
 # Open Latest
 - Open latest file in selected folder.
-- Registers Ctrl+Alt+. globally.
-
-# Todo:
-- Add global hotkey override/setting so its not forced to Ctrl+Alt+.
+- Registers a changeable global hotkey to use for opening.
+- Minimizes to tray to stay out of the way.
