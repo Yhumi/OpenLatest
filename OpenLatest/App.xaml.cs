@@ -15,8 +15,20 @@ namespace OpenLatest
         NotifyIcon nIcon = new NotifyIcon();
         ContextMenuStrip menuStrip = new();
 
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern ushort GlobalFindAtom(string lpString);
+
         public App()
         {
+            var hotkey_str = GetType().Assembly.FullName;
+            var atom = GlobalFindAtom(hotkey_str);
+            if (atom > 0)
+            {
+                System.Windows.MessageBox.Show("Already running an instance of this application.", "Fatal.", MessageBoxButton.OK, MessageBoxImage.Error);
+                Current.Shutdown();
+                return;
+            }
+
             Settings.Default.Upgrade();
 
             nIcon.Icon = new Icon(@"Assets/fumo.ico");

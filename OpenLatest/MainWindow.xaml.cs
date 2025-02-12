@@ -32,14 +32,23 @@ namespace OpenLatest
             [In] IntPtr hWnd,
             [In] int id);
 
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern ushort GlobalAddAtom(string lpString);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern ushort GlobalDeleteAtom(ushort atom);
+
         private HwndSource _source;
-        private const int HOTKEY_ID = 9000;
+        private readonly ushort HOTKEY_ID;
 
         public MainWindow()
         {
             InitializeComponent();            
             DataContext = Data;
             ResizeMode = ResizeMode.CanMinimize;
+
+            var hotkey_str = App.Current.GetType().Assembly.FullName;
+            HOTKEY_ID = GlobalAddAtom(hotkey_str);
 
             Properties.Settings.Default.Upgrade();
         }
@@ -57,6 +66,7 @@ namespace OpenLatest
         {
             _source.RemoveHook(HwndHook);
             _source = null;
+            GlobalDeleteAtom(HOTKEY_ID);
             UnregisterHotKey();
             Data.UpdateSettings();
             base.OnClosed(e);
@@ -85,12 +95,11 @@ namespace OpenLatest
             switch (msg)
             {
                 case WM_HOTKEY:
-                    switch (wParam.ToInt32())
+                    var id = wParam.ToInt32();
+                    if (id == HOTKEY_ID)
                     {
-                        case HOTKEY_ID:
-                            OpenLatest();
-                            handled = true;
-                            break;
+                        OpenLatest();
+                        handled = true;
                     }
                     break;
                 case 0x0112:
