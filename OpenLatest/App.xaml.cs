@@ -1,5 +1,9 @@
 ﻿using OpenLatest.Properties;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OpenLatest
 {
@@ -16,6 +20,7 @@ namespace OpenLatest
             Settings.Default.Upgrade();
 
             nIcon.Icon = new Icon(@"Assets/fumo.ico");
+            nIcon.Text = "Open Latest";
             nIcon.Visible = true;
             //nIcon.ShowBalloonTip(5000, "Running in background.", "Open Latest will continue to function.", ToolTipIcon.Info);
 
@@ -34,12 +39,6 @@ namespace OpenLatest
                 //events comes here# 
                 MainWindow.Visibility = Visibility.Visible;
                 MainWindow.WindowState = WindowState.Normal;
-            }
-
-            if (e.Button == MouseButtons.Right)
-            {
-                if (nIcon.ContextMenuStrip != null)
-                    nIcon.ContextMenuStrip.Show();
             }
         }
 

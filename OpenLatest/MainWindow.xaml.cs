@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
@@ -19,14 +20,14 @@ namespace OpenLatest
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [DllImport("User32.dll")]
+        [DllImport("User32.dll", SetLastError = true)]
         private static extern bool RegisterHotKey(
             [In] IntPtr hWnd,
             [In] int id,
             [In] uint fsModifiers,
             [In] uint vk);
 
-        [DllImport("User32.dll")]
+        [DllImport("User32.dll", SetLastError = true)]
         private static extern bool UnregisterHotKey(
             [In] IntPtr hWnd,
             [In] int id);
@@ -67,7 +68,8 @@ namespace OpenLatest
             if (!RegisterHotKey(helper.Handle, HOTKEY_ID, modifier, vk))
             {
                 // handle error
-                System.Windows.MessageBox.Show("Fatal Error.", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
+                var err = Marshal.GetLastPInvokeErrorMessage();
+                System.Windows.MessageBox.Show($"{err}", "Error.", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
