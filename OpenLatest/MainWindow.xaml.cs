@@ -130,6 +130,21 @@ namespace OpenLatest
             }
         }
 
+        private void OpenExeDialog(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Title = "Select Executable",
+                Filter = "Executable Files (*.exe)|*.exe",
+                Multiselect = false
+            };
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                Data.ExecutablePath = fileDialog.FileName;
+            }
+        }
+
         private void ReRegisterHotkey(object sender, RoutedEventArgs e)
         {
             //Unregister current then re-register new
@@ -148,6 +163,10 @@ namespace OpenLatest
                 try
                 {
                     ProcessStartInfo processStartInfo = new ProcessStartInfo(latestItem.FullName);
+
+                    processStartInfo.FileName = (!Data.OpenWithExecutable || String.IsNullOrWhiteSpace(Data.ExecutablePath)) ? latestItem.FullName : Data.ExecutablePath;
+                    if (Data.OpenWithExecutable && !String.IsNullOrWhiteSpace(Data.ExecutablePath)) processStartInfo.Arguments = $"\"{latestItem.FullName}\"";
+
                     processStartInfo.UseShellExecute = true;
 
                     if (Data.CopyToClipboard) System.Windows.Clipboard.SetDataObject(latestItem.FullName);
@@ -164,8 +183,12 @@ namespace OpenLatest
     public class MainWindow_Data : INotifyPropertyChanged
     {
         private string _folder = string.Empty;
+        private string _executablePath = string.Empty;
+        private bool _openWithExecutable = false;
         public string Folder { get => _folder; set { _folder = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Folder")); } }
+        public string ExecutablePath { get => _executablePath; set { _executablePath = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ExecutablePath")); } }
         public bool CopyToClipboard { get; set; } = false;
+        public bool OpenWithExecutable { get => _openWithExecutable; set { _openWithExecutable = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OpenWithExecutable")); } }
 
         public bool Ctrl { get; set; } = true;
         public bool Alt { get; set; } = true;
@@ -200,6 +223,9 @@ namespace OpenLatest
 
                 CopyToClipboard = Properties.Settings.Default.CopyToClipboard;
                 Folder = Properties.Settings.Default.Folder;
+
+                OpenWithExecutable = Properties.Settings.Default.OpenWithExecutable;
+                ExecutablePath = Properties.Settings.Default.ExecutableFile;
             }
             catch (Exception ex) { }
         }
@@ -213,6 +239,9 @@ namespace OpenLatest
 
             Properties.Settings.Default.CopyToClipboard = CopyToClipboard;
             Properties.Settings.Default.Folder = Folder;
+
+            Properties.Settings.Default.OpenWithExecutable = OpenWithExecutable;
+            Properties.Settings.Default.ExecutableFile = ExecutablePath;
 
             Properties.Settings.Default.Save();
         }
